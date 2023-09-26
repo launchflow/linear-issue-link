@@ -1,0 +1,19 @@
+name: Require Linear PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  linear-issue-title:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check PR title
+      run: |
+        title="${{ github.event.pull_request.title }}"
+        pattern="^LF-[0-9]+:.*"
+        if [[ ! ${title} =~ ${pattern} ]]; then
+          echo "Error: The PR title does not link a linear issue like: LF-123: My PR title"
+          exit 1
+        fi
