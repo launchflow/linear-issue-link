@@ -12,7 +12,7 @@ jobs:
       - name: Check PR title
         run: |
           title="${{ github.event.pull_request.title }}"
-          pattern="^\[?LF-[\d]+\]?[: ].*"
+          pattern="^LF-[\d]+[: ].*"
           if [[ ! ${title} =~ ${pattern} ]]; then
             echo "Error: The PR title does not link a linear issue like: LF-123: My PR title"
             exit 1
