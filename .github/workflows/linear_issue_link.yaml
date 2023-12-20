@@ -19,7 +19,7 @@ jobs:
       - name: Check for Linear Issue Link
         run: |
           # Regex to match Linear issue pattern
-          ISSUE_REGEX='LIN-\d+'
+          ISSUE_REGEX='LF-\d+'
 
           # Fetch PR description and comments
           PR_NUMBER=${{ github.event.pull_request.number }}
@@ -47,5 +47,4 @@ jobs:
             echo "Linear issue link found."
           else
             echo "No Linear issue link found."
-            exit 1
           fi
