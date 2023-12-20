@@ -48,4 +48,4 @@ jobs:
           else
             echo "No Linear issue link found."
             exit 1
-          end
+          fi
