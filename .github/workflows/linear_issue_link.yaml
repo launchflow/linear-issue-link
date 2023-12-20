@@ -12,34 +12,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-    - name: Check for Linear Issue Link
-      run: |
-        # Regex to match Linear issue pattern
-        ISSUE_REGEX='LIN-\d+'
+      - name: Check for Linear Issue Link
+        run: |
+          # Regex to match Linear issue pattern
+          ISSUE_REGEX='LIN-\d+'
 
-        # Fetch PR description and comments
-        PR_NUMBER=${{ github.event.pull_request.number }}
-        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        PR_RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER")
-        
-        # Debug: Print the response for troubleshooting
-        echo "PR Response:"
-        echo "$PR_RESPONSE"
+          # Fetch PR description and comments
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          PR_RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER")
 
-        PR_DESCRIPTION=$(echo "$PR_RESPONSE" | jq -r '.body')
-        PR_COMMENTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments" | jq -r '.[] | select(.body != null) | .body')
+          # Debug: Print the response for troubleshooting
+          echo "PR Response:"
+          echo "$PR_RESPONSE"
 
-        # Debug: Print the PR description and comments for troubleshooting
-        echo "PR Description:"
-        echo "$PR_DESCRIPTION"
-        echo "PR Comments:"
-        echo "$PR_COMMENTS"
+          PR_DESCRIPTION=$(echo "$PR_RESPONSE" | jq -r '.body')
+          PR_COMMENTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments" | jq -r '.[] | select(.body != null) | .body')
 
-        # Check for Linear issue link in PR description and comments
-        if [[ "$PR_DESCRIPTION" =~ $ISSUE_REGEX ]] || [[ "$PR_COMMENTS" =~ $ISSUE_REGEX ]]; then
-          echo "Linear issue link found."
-        else
-          echo "No Linear issue link found."
-          exit 1
-        end
+          # Debug: Print the PR description and comments for troubleshooting
+          echo "PR Description:"
+          echo "$PR_DESCRIPTION"
+          echo "PR Comments:"
+          echo "$PR_COMMENTS"
 
+          # Check for Linear issue link in PR description and comments
+          if [[ "$PR_DESCRIPTION" =~ $ISSUE_REGEX ]] || [[ "$PR_COMMENTS" =~ $ISSUE_REGEX ]]; then
+            echo "Linear issue link found."
+          else
+            echo "No Linear issue link found."
+            exit 1
+          end
