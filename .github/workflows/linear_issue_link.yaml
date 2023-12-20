@@ -10,6 +10,7 @@ jobs:
     permissions:
       pull-requests: read
       issues: read
+      contents: write
 
     steps:
       - name: Checkout code
