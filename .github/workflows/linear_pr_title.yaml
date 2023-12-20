@@ -1,4 +1,4 @@
-name: Require Linear PR Title
+name: Require Linear Issue PR Link
 
 on:
   pull_request:
@@ -9,11 +9,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check PR title
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check for Linear Issue Link
         run: |
-          title="${{ github.event.pull_request.title }}"
-          pattern="^LF-[0-9]+:.*"
-          if [[ ! ${title} =~ ${pattern} ]]; then
-            echo "Error: The PR title does not link a linear issue like: LF-123: My PR title"
+          # Regex to match Linear issue pattern
+          ISSUE_REGEX='LF-\d+'
+
+          # Fetch PR description and comments
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          PR_DESCRIPTION=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" | jq -r '.body')
+          PR_COMMENTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments" | jq -r '.[].body')
+
+          # Check for Linear issue link in PR description and comments
+          if [[ "$PR_DESCRIPTION" =~ $ISSUE_REGEX ]] || [[ "$PR_COMMENTS" =~ $ISSUE_REGEX ]]; then
+            echo "Linear issue link found."
+          else
+            echo "No Linear issue link found."
             exit 1
-          fi
+          end
