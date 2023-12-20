@@ -19,7 +19,7 @@ jobs:
       - name: Check for Linear Issue Link
         run: |
           # Regex to match Linear issue pattern
-          ISSUE_REGEX='LF-\d+'
+          ISSUE_REGEX='LF-[0-9]+'
 
           # Fetch PR description and comments
           PR_NUMBER=${{ github.event.pull_request.number }}
