@@ -43,9 +43,7 @@ jobs:
           echo "$PR_TITLE"
 
           # Check for Linear issue link in PR description and comments
-          if echo "$PR_TITLE" | grep -qE "$ISSUE_REGEX" || 
-            { [ -n "$PR_DESCRIPTION" ] && echo "$PR_DESCRIPTION" | grep -qE "$ISSUE_REGEX"; } || 
-            { [ -n "$PR_COMMENTS" ] && echo "$PR_COMMENTS" | grep -qE "$ISSUE_REGEX"; }; then
+          if echo "$PR_TITLE" | grep -qE "$ISSUE_REGEX"; then
             echo "Linear issue link found."
           else
             echo "No Linear issue link found."
